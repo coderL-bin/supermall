@@ -1,4 +1,4 @@
-# supermall
+# supermallcopy
 
 ## Project setup
 ```
