@@ -20,49 +20,56 @@
         type: Number,
         default: 0
       },
-      isClick: {
+      pullUpLoad: {
         type: Boolean,
         default: false
       },
-      pullUpLoad: {
+      isClick: {
         type: Boolean,
         default: false
       }
     },
     data(){
       return {
-        scroll: null
+        scroll: null,
+        cont : 1
       }
     },
-    mounted(){
+    mounted() {
       //1. 创建BScroll对象
       this.scroll = new BScroll(this.$refs.wrapper, {
         probeType: this.probeType,
-        click: true,
+        click: this.isClick,
         pullUpLoad: this.pullUpLoad
       });
 
       //2.监听滚动的位置
-      this.scroll.on('scroll', (position) => {
-        this.$emit('scroll', position)
-      })
+        this.scroll.on('scroll', (position) => {
+          this.$emit('scroll', position)
+        });
 
-      //3.监听上拉事件
-      this.scroll.on('pullingUp', ()=>{
-        this.$emit('pullingUp')
-      })
+      //3. 监听scroll滚动到底部
+      if(this.pullUpLoad) {
+        this.scroll.on('pullingUp', () => {
+          this.$emit('pullingUp');
+        });
+      };
     },
     methods: {
-      backClick() {
+      backClick(...args) {
         if (this.isClick) {
-          this.scroll.scrollTo(0, 0);
+          this.scroll.scrollTo(...args);
         }
       },
-      scrollTo(x, y, time=500){
-        this.scroll.scrollTo(x, y, time);
+      refresh(){
+        this.scroll && this.scroll.refresh();
+        //console.log('刷新'+ this.cont++ +'次');
       },
       finishPullUp(){
-        this.scroll.finishPullUp();
+        this.scroll && this.scroll.finishPullUp();
+      },
+      getScrollY(){
+        return this.scroll ? this.scroll.y: 0;
       }
   }
   }
