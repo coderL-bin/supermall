@@ -56,7 +56,7 @@
       };
     },
     methods: {
-      backClick(...args) {
+      backScroll(...args) {
         if (this.isClick) {
           this.scroll.scrollTo(...args);
         }

@@ -85,7 +85,7 @@
     },
     activated(){
       this.$refs.scroll.refresh();
-      this.$refs.scroll.backClick(0, this.saveY);
+      this.$refs.scroll.backScroll(0, this.saveY);
     },
     deactivated(){
       this.saveY = this.$refs.scroll.getScrollY();
@@ -135,6 +135,8 @@
         }
         this.$refs.tabControl.currentIndex = index;
           this.$refs.tabControlCopy.currentIndex = index;
+          //this.$refs.scroll.scroll.scrollTo(0, -this.tabOffsetTop);
+          this.$refs.scroll.backScroll(0, -this.tabOffsetTop);
       },
       loadMore() {
         this.getGoods(this.currentType);
@@ -167,7 +169,7 @@
       //回到顶部按钮点击事件
       backTop() {
         //this.isClick = !this.isClick;
-        this.$refs.scroll.backClick(0, 0, 2000);
+        this.$refs.scroll.backScroll(0, 0, 2000);
       },
       //监听事件滚动相关判断
       contentScroll(position) {
