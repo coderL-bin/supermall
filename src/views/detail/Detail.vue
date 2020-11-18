@@ -2,25 +2,29 @@
   <div id="detail">
     <detail-nav-bar/>
     <detail-swiper :top-images="topImages"/>
+    <detail-base-info :goods="goods"/>
   </div>
 </template>
 
 <script>
 import DetailNavBar from "./childComps/DetailNavBar";
 import DetailSwiper from "./childComps/DetailSwiper";
+import DetailBaseInfo from "./childComps/DetailBaseInfo";
 
-import {getDetail} from "network/detail";
+import {getDetail, GoodsInfo} from "network/detail";
 
 export default {
     name: "Detail",
     components: {
     DetailNavBar,
-      DetailSwiper
+      DetailSwiper,
+      DetailBaseInfo
     },
     data(){
       return {
         iid: null,
-        topImages: []
+        topImages: [],
+        goods: {}
       }
     },
     created(){
@@ -31,7 +35,11 @@ export default {
       getDetail(this.iid).then(res => {
         //1. 获取顶部的图片轮播数据
         console.log(res);
-        this.topImages = res.result.itemInfo.topImages;
+        const data = res.result;
+        this.topImages = data.itemInfo.topImages;
+
+        //2.获取商品详情的数据
+        this.goods = new GoodsInfo(data.itemInfo, data.columns, data.shopInfo.services)
       })
     },
   destroyed(){
