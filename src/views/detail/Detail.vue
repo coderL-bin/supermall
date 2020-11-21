@@ -1,8 +1,13 @@
 <template>
   <div id="detail">
-    <detail-nav-bar/>
-    <detail-swiper :top-images="topImages"/>
-    <detail-base-info :goods="goods"/>
+    <detail-nav-bar class="detail-nav"/>
+    <scroll class="content" ref="BScroll">
+      <detail-swiper :top-images="topImages"/>
+      <detail-base-info :goods="goods"/>
+      <detail-shop-info :shop="shop" />
+      <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"/>
+      <detail-param-info :param-info="paramInfo"/>
+    </scroll>
   </div>
 </template>
 
@@ -10,21 +15,33 @@
 import DetailNavBar from "./childComps/DetailNavBar";
 import DetailSwiper from "./childComps/DetailSwiper";
 import DetailBaseInfo from "./childComps/DetailBaseInfo";
+import DetailShopInfo from "./childComps/DetailShopInfo";
+import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
+import DetailParamInfo from "./childComps/DetailParamInfo";
 
-import {getDetail, GoodsInfo} from "network/detail";
+import {getDetail, Goods, Shop,GoodsParam} from "network/detail";
+
+import Scroll from "components/common/scroll/Scroll";
 
 export default {
     name: "Detail",
     components: {
     DetailNavBar,
       DetailSwiper,
-      DetailBaseInfo
+      DetailBaseInfo,
+      DetailShopInfo,
+      Scroll,
+      DetailGoodsInfo,
+      DetailParamInfo
     },
     data(){
       return {
         iid: null,
         topImages: [],
-        goods: {}
+        goods: {},
+        shop: {},
+        detailInfo: {},
+       paramInfo: {}
       }
     },
     created(){
@@ -39,11 +56,29 @@ export default {
         this.topImages = data.itemInfo.topImages;
 
         //2.获取商品详情的数据
-        this.goods = new GoodsInfo(data.itemInfo, data.columns, data.shopInfo.services)
+        this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo)
+
+        //3.获取商家信息
+        this.shop = new Shop(data.shopInfo);
+
+        //4.保存商品的详情数据
+        this.detailInfo = data.detailInfo;
+
+        //5.隐藏底部的nav-bar
+        this.$bus.$emit('isShow', false);
+
+        //6. 获取参数信息
+        this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule);
       })
     },
+  methods: {
+      imageLoad(){
+        this.$refs.BScroll.refresh();
+      }
+  },
   destroyed(){
-    console.log('组件被销毁');
+    //.组件销毁显示底部的nav-bar
+    this.$bus.$emit('isShow', true);
   },
   activated(){
     console.log('activated');
@@ -55,5 +90,18 @@ export default {
 </script>
 
 <style scoped>
-
+  #detail{
+  position: relative;
+  z-index: 9;
+    height: 100vh;
+}
+  .detail-nav{
+    position: relative;
+    z-index: 9;
+  background-color: #fff;
+  }
+  .content{
+      height: calc(100% - 44px);
+    overflow: hidden;
+    }
 </style>

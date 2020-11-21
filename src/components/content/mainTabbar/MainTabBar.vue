@@ -1,5 +1,5 @@
 <template>
-  <tab-bar>
+  <tab-bar v-show="isShow">
     <TabBarItem path="/home" active-color="deeppink">
       <img slot="item-icon" src="~assets/img/tabbar/home.svg" alt="">
       <img slot="item-icon-active" src="~assets/img/tabbar/home_active.svg" alt="">
@@ -32,6 +32,16 @@
     components: {
       TabBar,
       TabBarItem,
+    },
+    data(){
+      return {
+        isShow: true
+      }
+    },
+    created(){
+      this.$bus.$on('isShow', (show) => {
+        this.isShow = show
+      })
     }
   }
 </script>
