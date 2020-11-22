@@ -39,6 +39,7 @@ export class Goods{
       this.newPrice = itemInfo.price;
       this.oldPrice = itemInfo.oldPrice;
       this.discount = itemInfo.discountDesc;
+      this.discountBgColor = itemInfo.discountBgColor;
       this.columns = columns;
       this.services = shopInfo.services;
   }
