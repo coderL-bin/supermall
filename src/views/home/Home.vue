@@ -45,6 +45,7 @@
 
   import {getHomeMultidata, getHomeGoods} from "network/home";
   import {debounce, delayTime} from "common/utils";
+  import {itemListenerMixin} from "common/mixin";
 
 
   export default {
@@ -62,7 +63,7 @@
         isShow: false,
         tabOffsetTop: 0,
         isTabFixed: false,
-        saveY: 0
+        saveY: 0,
       }
     },
     components: {
@@ -75,6 +76,7 @@
       Scroll,
       BackTop
     },
+    mixins: [itemListenerMixin],
     computed: {
       goodsList(){
         return this.goods[this.currentType].list
@@ -83,14 +85,23 @@
     destroyed(){
       console.log('Home组件被销毁');
     },
+
+    //当前组件点击进入时回调
     activated(){
       this.$refs.scroll.refresh();
       this.$refs.scroll.backScroll(0, this.saveY);
     },
+
+    //当前组件离开时回调
     deactivated(){
+      //1.保存Y值
       this.saveY = this.$refs.scroll.getScrollY();
-      console.log(this.saveY);
+
+      //2.取消全局事件监听
+      this.$bus.$off('homeImageLoad', this.itemImgListener)
     },
+
+    //创建组件时回调
     created(){
       //1.请求多个数据
       this.getMultidata()
@@ -101,13 +112,7 @@
       this.getGoods('sell')
     },
     mounted(){
-      //1.监听item中图片加载完成
-      const refresh = debounce(this.$refs.scroll.refresh, 300);
-      this.$bus.$on('imageLoad', () => {
-        refresh();
-      });
-
-      /*//2.获取tabControl的offsetTop
+      /*//1.获取tabControl的offsetTop
       //所有组件都有一个属性$el: 用于获取组件中的元素
       this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
       console.log(this.tabOffsetTop);*/

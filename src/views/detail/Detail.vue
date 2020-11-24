@@ -1,12 +1,14 @@
 <template>
   <div id="detail">
     <detail-nav-bar class="detail-nav"/>
-    <scroll class="content" ref="BScroll">
+    <scroll class="content" ref="scroll">
       <detail-swiper :top-images="topImages"/>
       <detail-base-info :goods="goods"/>
       <detail-shop-info :shop="shop" />
       <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad"/>
       <detail-param-info :param-info="paramInfo"/>
+    <detail-comment-info :comment-info="commentInfo"/>
+      <goods-list :goods="recommend"/>
     </scroll>
   </div>
 </template>
@@ -18,8 +20,11 @@ import DetailBaseInfo from "./childComps/DetailBaseInfo";
 import DetailShopInfo from "./childComps/DetailShopInfo";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
 import DetailParamInfo from "./childComps/DetailParamInfo";
+import DetailCommentInfo from "./childComps/DetailCommentInfo";
+import GoodsList from "components/content/goods/GoodsList";
 
-import {getDetail, Goods, Shop,GoodsParam} from "network/detail";
+import {getDetail, Goods, Shop,GoodsParam, getRecommend} from "network/detail";
+import {itemListenerMixin} from "common/mixin";
 
 import Scroll from "components/common/scroll/Scroll";
 
@@ -32,8 +37,11 @@ export default {
       DetailShopInfo,
       Scroll,
       DetailGoodsInfo,
-      DetailParamInfo
+      DetailParamInfo,
+      DetailCommentInfo,
+      GoodsList
     },
+  mixins: [itemListenerMixin],
     data(){
       return {
         iid: null,
@@ -41,7 +49,9 @@ export default {
         goods: {},
         shop: {},
         detailInfo: {},
-       paramInfo: {}
+       paramInfo: {},
+        commentInfo: {},
+        recommend: []
       }
     },
     created(){
@@ -69,16 +79,32 @@ export default {
 
         //6. 获取参数信息
         this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule);
+
+        //7.取出评论信息
+        this.commentInfo = data.rate.cRate !==0 ? data.rate.list[0] : '';
+      }),
+
+        //3.请求推荐数据
+      getRecommend().then(res => {
+        console.log(res);
+        this.recommend = res.data.list;
       })
     },
-  methods: {
-      imageLoad(){
-        this.$refs.BScroll.refresh();
-      }
+  mounted(){
+    //1.监听item中图片加载完成
+      //if(this.$refs.scroll) this.$refs.scroll.refresh();
   },
   destroyed(){
     //.组件销毁显示底部的nav-bar
     this.$bus.$emit('isShow', true);
+
+    //取消全局事件监听
+    this.$bus.$off('detailImageLoad', this.itemImgListener);
+  },
+  methods: {
+      imageLoad(){
+        this.$refs.scroll.refresh();
+      }
   },
   activated(){
     console.log('activated');
