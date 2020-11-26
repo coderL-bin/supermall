@@ -35,9 +35,10 @@
     methods: {
       imageLoad(){
         //因为这里所有图片都影响高度，所以判断所有图片都加载完了，在进行一次回调就可以了；
-        if(++this.counter === this.imagesLength) {
+        /*if(++this.counter === this.imagesLength) {
           this.$emit('imageLoad')
-        }
+        }*/
+        this.$emit('detailImageLoad')
       }
     },
     watch: {

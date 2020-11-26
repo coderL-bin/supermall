@@ -63,7 +63,7 @@
       },
       refresh(){
         this.scroll && this.scroll.refresh();
-        //console.log('刷新'+ this.cont++ +'次');
+        console.log('刷新'+ this.cont++ +'次');
       },
       finishPullUp(){
         this.scroll && this.scroll.finishPullUp();

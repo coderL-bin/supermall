@@ -1,4 +1,4 @@
-export function debounce (fu , delay){
+export function debounce (fu , delay=100){
   //自定义防抖动函数
   let timer = null;
   return (...args) => {
