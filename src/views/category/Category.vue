@@ -106,12 +106,14 @@
       <li>分类的列表99</li>
       <li>分类的列表100</li>
     </ul>
+    <back-top @click.native="backTop" v-show="isShowBackTop"/>
   </div>
 </template>
 
 <script>
   import NavBarToo from "../../components/common/navbartoo/NavBarToo";
   import BScroll from 'better-scroll'
+  import {backTopMixin} from "common/mixin";
 
   export default {
     name: "Category",
@@ -120,6 +122,7 @@
       scroll: null
       }
     },
+    mixins: [backTopMixin],
     components: {
       NavBarToo
     },

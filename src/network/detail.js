@@ -41,10 +41,12 @@ const p = new Person('codeL', 18);*/
 export class Goods{
   constructor(itemInfo, columns, shopInfo){
       this.title = itemInfo.title;
+      this.desc = itemInfo.desc;
       this.newPrice = itemInfo.price;
       this.oldPrice = itemInfo.oldPrice;
       this.discount = itemInfo.discountDesc;
       this.discountBgColor = itemInfo.discountBgColor;
+      this.realPrice = itemInfo.lowNowPrice;
       this.columns = columns;
       this.services = shopInfo.services;
   }

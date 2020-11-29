@@ -28,7 +28,7 @@
       修饰符：.native
           在需要监听一个组件的原生事件时，必须给对应的事件加上.native修饰符，才能进行监听
     -->
-    <back-top @click.native="backTop" v-show="isShow" />
+    <back-top @click.native="backTop" v-show="isShowBackTop" />
   </div>
 </template>
 
@@ -41,12 +41,10 @@
   import TabControl from "components/content/tabControl/TabControl";
   import GoodsList from "components/content/goods/GoodsList";
   import Scroll from "components/common/scroll/Scroll";
-  import BackTop from "components/content/backTop/BackTop";
 
   import {getHomeMultidata, getHomeGoods} from "network/home";
   import {debounce, delayTime} from "common/utils";
-  import {itemListenerMixin} from "common/mixin";
-
+  import {itemListenerMixin, backTopMixin} from "common/mixin";
 
   export default {
     name: "Home",
@@ -60,10 +58,10 @@
           'sell': {page: 0, list: []}
         },
         currentType: 'pop',
-        isShow: false,
         tabOffsetTop: 0,
         isTabFixed: false,
         saveY: 0,
+        tabControlY: 0
       }
     },
     components: {
@@ -74,9 +72,8 @@
       TabControl,
       GoodsList,
       Scroll,
-      BackTop
     },
-    mixins: [itemListenerMixin],
+    mixins: [itemListenerMixin, backTopMixin],
     computed: {
       goodsList(){
         return this.goods[this.currentType].list
@@ -171,15 +168,10 @@
       swiperImageLoad() {
         this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
       },
-      //回到顶部按钮点击事件
-      backTop() {
-        //this.isClick = !this.isClick;
-        this.$refs.scroll.backScroll(0, 0, 2000);
-      },
       //监听事件滚动相关判断
       contentScroll(position) {
         //1.判断BackTop是否显示
-        this.isShow = -position.y > 1000;
+        this.listenShowBackTop(position);
 
         //2.决定tabControl是否吸顶(position: fixed)
         this.isTabFixed = -position.y > this.tabOffsetTop;

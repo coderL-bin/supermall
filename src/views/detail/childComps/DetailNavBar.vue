@@ -21,14 +21,15 @@
     data(){
       return {
         titles: ['商品', '参数', '评论', '推荐'],
+        currentIndex: 0
       }
     },
-    props: {
+   /* props: {
       currentIndex: {
         type: Number,
         default: 0
       }
-    },
+    },*/
     components: {
       NavBar
     },
