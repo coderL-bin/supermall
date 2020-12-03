@@ -1,7 +1,9 @@
 <template>
   <div class="bottom-bar">
     <div class="checked">
-      <check-button class="check-all"/>
+      <check-button class="check-all"
+                                  :is-change="isSelectAll"
+                                  @click.native="changeClick"/>
       <span>全选</span>
     </div>
     <div class="price">
@@ -24,7 +26,34 @@
       CheckButton
     },
     computed:{
-      ...mapGetters(['totalPrice', 'checkLength'])
+      ...mapGetters(['totalPrice', 'checkLength','cartList']),
+      isSelectAll(){
+        if(this.cartList.length === 0) return false;
+
+        //1.使用filter
+        //return !(this.cartList.filter(item => !item.change).length);
+
+        //2.使用find
+        return !this.cartList.find(item => !item.change);
+
+        //3,使用普通遍历
+       /* for(let item of this.cartList){
+          if(!item.change){
+            return false;
+          }
+        }
+        return true;*/
+      }
+    },
+    methods: {
+      changeClick() {
+        if(this.isSelectAll){ //全部选中
+         this.cartList.forEach(item => item.change = false);
+       }else{ //部分或全部不选中
+         this.cartList.forEach(item => item.change = true);
+       }
+       //this.cartList.forEach(item => item.change = !this.isSelectAll);
+      }
     }
   }
 </script>

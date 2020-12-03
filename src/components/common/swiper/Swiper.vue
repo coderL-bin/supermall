@@ -1,6 +1,6 @@
 <template>
     <div id="hy-swiper">
-      <div class="swiper" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd">
+      <div class="swiper" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd" ref="swiper">
         <slot></slot>
       </div>
       <slot name="indicator">
@@ -46,11 +46,13 @@
     mounted: function () {
       // 1.操作DOM, 在前后添加Slide
       setTimeout(() => {
-        this.handleDom();
+        if(this.$refs.swiper){
+          this.handleDom();
+        }
 
         // 2.开启定时器
         this.startTimer();
-      }, 3000)
+      }, 1000)
     },
     methods: {
 		  /**
@@ -118,7 +120,7 @@
        */
 		  handleDom: function () {
         // 1.获取要操作的元素
-        let swiperEl = document.querySelector('.swiper');
+        let swiperEl =  this.$refs.swiper ;//document.querySelector('.swiper');
         let slidesEls = swiperEl.getElementsByClassName('slide');
 
         // 2.保存个数
