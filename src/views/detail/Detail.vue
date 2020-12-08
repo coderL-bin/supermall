@@ -34,6 +34,8 @@ import {debounce} from "common/utils";
 import{BACK_POSITION} from "common/const";
 import {backTopMixin} from "../../common/mixin";
 
+import{mapActions} from "vuex";
+
 export default {
     name: "Detail",
     components: {
@@ -77,6 +79,7 @@ export default {
 
         //2.获取商品详情的数据
         this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo)
+        console.log(this.goods.services);
 
         //3.获取商家信息
         this.shop = new Shop(data.shopInfo);
@@ -142,6 +145,9 @@ export default {
     this.$bus.$off('detailImageLoad', this.itemImgListener);
   },
   methods: {
+      ...mapActions({
+        add : 'addCart'
+      }),
       imageLoad(){
         this.refresh();
         this.getThemeTopY();
@@ -190,7 +196,19 @@ export default {
 
       //2.将商品添加到购物车里
       //this.$store.commit('addCart', product);
-      this.$store.dispatch('addCart', product);
+      /*this.$store.dispatch('addCart', product).then(res => {
+        console.log(res);
+      });*/
+      this.add(product).then(res => {
+        /*this.isShow = true;
+      this.message = res;
+
+      setTimeout(() => {
+        this.isShow = false;
+        this.message = '';
+      },1500)*/
+        this.$toast.Show(res)
+    })
     }
   },
   activated(){
